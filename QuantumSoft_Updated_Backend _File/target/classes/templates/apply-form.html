@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply Form</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="text-center">Apply Form</h2>
+    <form id="applyForm" th:action="@{/api/forms/apply}" th:object="${Form}" method="post" enctype="multipart/form-data" class="mt-4">
+
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName" name="lastName" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="mobileNumber">Mobile Number</label>
+            <input type="tel" class="form-control" id="mobileNumber" name="mobileNumber" required>
+        </div>
+        <div class="form-group">
+            <label for="country">Country</label>
+            <input type="text" class="form-control" id="country" name="country" required>
+        </div>
+        <div class="form-group">
+            <label for="cv">Upload CV</label>
+            <input type="file" class="form-control-file" id="cv" name="cv" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <h3 class="mt-5">Fetched Data</h3>
+    <pre id="fetchedData"></pre>
+</div>
+
+<script>
+    // Form submission handler
+    document.getElementById('applyForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch('https://your-backend-api/apply', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                alert('Form submitted successfully!');
+            } else {
+                alert('Failed to submit the form.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while submitting the form.');
+        }
+    });
+
+    // Function to fetch data from the backend
+    async function fetchData() {
+        try {
+            const response = await fetch('https://your-backend-api/apply-data');
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('fetchedData').textContent = JSON.stringify(data, null, 2);
+            } else {
+                document.getElementById('fetchedData').textContent = 'Failed to fetch data.';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('fetchedData').textContent = 'An error occurred while fetching data.';
+        }
+    }
+
+    // Fetch data when the page loads
+    fetchData();
+</script>
+</body>
+</html>
+
